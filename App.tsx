@@ -212,10 +212,7 @@ const App: React.FC = () => {
         <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent tracking-tight">
-                CapTable Pro
-              </h1>
-              <p className="text-xs font-bold opacity-40 uppercase tracking-widest mt-1 dark:text-[#8899a6]">Setup Your First Round</p>
+              <img src="img/OpenCap_logo_small.png"></img>
             </div>
             <div className="flex gap-2 items-center">
               <CurrencyToggle />
