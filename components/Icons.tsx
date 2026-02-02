@@ -1,21 +1,21 @@
 
 import React from 'react';
 
-export const OpenCapLogo = ({ className = "h-8", isDark = false }) => (
-  <div className={`flex items-center gap-2 ${className}`}>
-    <div className="relative flex items-center justify-center shrink-0">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
-        <rect width="32" height="32" rx="8" fill={isDark ? "#ffffff" : "#0f172a"} />
-        <path d="M16 8C11.5817 8 8 11.5817 8 16C8 20.4183 11.5817 24 16 24C20.4183 24 24 20.4183 24 16" stroke={isDark ? "#0f172a" : "#ffffff"} strokeWidth="3" strokeLinecap="round" />
-        <path d="M16 16L24 8" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round" />
-        <circle cx="24" cy="8" r="2" fill="#3b82f6" />
-      </svg>
-    </div>
-    <span className={`text-xl font-[900] tracking-tighter shrink-0 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-      Open<span className="text-blue-500">Cap</span>
-    </span>
-  </div>
-);
+export const OpenCapLogo = ({ className = "h-8", isDark = false }) => {
+  // If isDark is true, we are on a dark background, so we use the standard logo (likely light text).
+  // If isDark is false, we are on a light background, so we use the "light" logo (likely dark/themed text).
+  const logoUrl = isDark 
+    ? "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_light_small.png"
+    : "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_small.png";
+
+  return (
+    <img 
+      src={logoUrl} 
+      alt="OpenCap Logo" 
+      className={`${className} object-contain`}
+    />
+  );
+};
 
 export const PlusIcon = ({ className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>

@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 
 const App: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [currency, setCurrency] = useState<'$' | '€'>('$');
   const [initialData, setInitialData] = useState<InitialData | null>(null);
   const [rounds, setRounds] = useState<Round[]>([]);
@@ -212,7 +212,7 @@ const App: React.FC = () => {
         <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
           <div className="flex justify-between items-center mb-8">
             <div className="flex flex-col">
-              <img src="https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_small.png" width="180" />
+              <OpenCapLogo isDark={isDarkMode} className="h-10 w-auto" />
             </div>
             <div className="flex gap-2 items-center">
               <CurrencyToggle />
@@ -327,7 +327,7 @@ const App: React.FC = () => {
       <header className="sticky top-0 z-10 bg-white/80 dark:bg-[#1e2732]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#38444d] px-4 py-4">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex flex-col">
-            <OpenCapLogo isDark={isDarkMode} className="h-6" />
+            <OpenCapLogo isDark={isDarkMode} className="h-6 w-auto" />
             <p className="text-[8px] opacity-40 uppercase tracking-[0.3em] font-black dark:text-[#8899a6] ml-1">Analytics</p>
           </div>
           <div className="flex gap-1 items-center">
@@ -559,10 +559,11 @@ const App: React.FC = () => {
                   value={nextRoundPreMoney}
                   onChange={(e) => {
                     setNextRoundPreMoney(e.target.value);
+                    // Fixed: was setting setupEquity instead of nextRoundEquity
                     if (nextRoundInvestment !== '' && nextRoundEquity === '') {
-                      setSetupEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
                     } else {
-                      setSetupEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
                     }
                   }}
                   onBlur={() => {
