@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Round, InitialData } from './types';
 import { calculateInitialRound, calculateNextRound, parseCurrencyShortcut, formatNumberWithCommas, stripCommas } from './utils/calculations';
-import { OpenCapLogo, PlusIcon, MoonIcon, SunIcon, ChartIcon, SparklesIcon, TrashIcon } from './components/Icons';
-import { analyzeCapTable } from './services/geminiService';
+import { OpenCapLogo, PlusIcon, MoonIcon, SunIcon, ChartIcon, TrashIcon } from './components/Icons';
 import {
   AreaChart,
   Area,
@@ -22,8 +21,7 @@ const App: React.FC = () => {
   const [initialData, setInitialData] = useState<InitialData | null>(null);
   const [rounds, setRounds] = useState<Round[]>([]);
   const [isRoundModalOpen, setIsRoundModalOpen] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [userRole, setUserRole] = useState<'Investor' | 'Company'>('Company');
 
   // Initial setup form states
   const [setupRoundName, setSetupRoundName] = useState('Initial Round');
@@ -89,8 +87,13 @@ const App: React.FC = () => {
     const pre = parseFloat(parseCurrencyShortcut(setupPreMoney));
     const equitySold = parseFloat(setupEquity) || 0;
     
-    // Default user (founder) starts with everything minus what's sold
-    const own = 100 - equitySold;
+    // Ownership based on role
+    let own = 0;
+    if (userRole === 'Investor') {
+      own = equitySold;
+    } else {
+      own = 100 - equitySold;
+    }
 
     if (isNaN(pre)) return;
 
@@ -139,7 +142,6 @@ const App: React.FC = () => {
     setNextRoundEquity('');
     setNextRoundPreMoney('');
     setNextRoundName(`Round ${rounds.length + 1}`);
-    setAiAnalysis(null);
   };
 
   const handleDeleteRound = (id: string) => {
@@ -147,7 +149,6 @@ const App: React.FC = () => {
     if (updatedRounds.length === 0) {
       setInitialData(null);
       setRounds([]);
-      setAiAnalysis(null);
       return;
     }
     const newChain: Round[] = [];
@@ -173,15 +174,6 @@ const App: React.FC = () => {
       }
     }
     setRounds(newChain);
-    setAiAnalysis(null);
-  };
-
-  const handleGetAnalysis = async () => {
-    if (rounds.length < 1 || !initialData) return;
-    setIsAnalyzing(true);
-    const analysis = await analyzeCapTable(rounds, currency);
-    setAiAnalysis(analysis);
-    setIsAnalyzing(false);
   };
 
   const currentRound = rounds[rounds.length - 1];
@@ -221,11 +213,31 @@ const App: React.FC = () => {
           </div>
           
           <p className="text-slate-600 dark:text-[#8899a6] mb-8 font-medium leading-relaxed">
-            Enter the details of your starting round. Your initial stake will be calculated as the remaining ownership after this round.
+            Enter the details of your starting round. Select your role to calculate ownership from your perspective.
           </p>
 
           <form onSubmit={handleStart} className="space-y-6">
             <div className="space-y-5">
+              <div>
+                <label className="block text-[10px] font-black mb-3 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Your Role</label>
+                <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-[#15202b] rounded-2xl border border-slate-200 dark:border-[#38444d]">
+                  <button 
+                    type="button"
+                    onClick={() => setUserRole('Company')}
+                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Company' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
+                  >
+                    Company
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setUserRole('Investor')}
+                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Investor' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
+                  >
+                    Investor
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Round Name</label>
                 <input 
@@ -343,7 +355,7 @@ const App: React.FC = () => {
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
-            <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Stake Value</p>
+            <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Stake Value ({userRole})</p>
             <p className="text-2xl font-black text-green-600 dark:text-green-400 truncate tracking-tight">
               {currency}{currentRound.userValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </p>
@@ -387,49 +399,21 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-[#1e2732] p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
-              <h3 className="font-bold mb-4 text-xs opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6]">Dilution Trend</h3>
-              <div className="h-48 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={rounds}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#38444d' : '#e2e8f0'} />
-                    <XAxis dataKey="name" fontSize={10} hide />
-                    <YAxis fontSize={10} hide />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '16px', border: 'none', background: isDarkMode ? '#1e2732' : '#fff', color: isDarkMode ? '#fff' : '#000' }}
-                      formatter={(val: any) => [`${val.toFixed(2)}%`, 'Stake']}
-                    />
-                    <Line type="monotone" dataKey="userOwnershipPercentage" stroke="#f59e0b" strokeWidth={4} dot={{ r: 5, fill: '#f59e0b', strokeWidth: 2, stroke: isDarkMode ? '#1e2732' : '#fff' }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-[#1e2732] p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d] flex flex-col justify-center">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-xs opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6]">AI Intelligence</h3>
-                <button 
-                  onClick={handleGetAnalysis}
-                  disabled={isAnalyzing}
-                  className="p-3 bg-blue-50 dark:bg-[#15202b] text-blue-600 dark:text-blue-400 rounded-2xl hover:scale-105 transition-transform disabled:opacity-50 shadow-sm border border-transparent dark:border-[#38444d]"
-                >
-                  <SparklesIcon />
-                </button>
-              </div>
-              <div className="text-sm leading-relaxed min-h-[100px] flex items-center">
-                {isAnalyzing ? (
-                  <div className="flex space-x-2 w-full justify-center">
-                    <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  </div>
-                ) : aiAnalysis ? (
-                  <p className="text-slate-600 dark:text-[#8899a6] font-medium">{aiAnalysis}</p>
-                ) : (
-                  <p className="text-slate-400 dark:text-[#8899a6]/60 italic text-center w-full">Ask Gemini to analyze your dilution health.</p>
-                )}
-              </div>
+          <div className="bg-white dark:bg-[#1e2732] p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
+            <h3 className="font-bold mb-4 text-xs opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6]">Dilution Trend</h3>
+            <div className="h-48 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={rounds}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#38444d' : '#e2e8f0'} />
+                  <XAxis dataKey="name" fontSize={10} hide />
+                  <YAxis fontSize={10} hide />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '16px', border: 'none', background: isDarkMode ? '#1e2732' : '#fff', color: isDarkMode ? '#fff' : '#000' }}
+                    formatter={(val: any) => [`${val.toFixed(2)}%`, 'Stake']}
+                  />
+                  <Line type="monotone" dataKey="userOwnershipPercentage" stroke="#f59e0b" strokeWidth={4} dot={{ r: 5, fill: '#f59e0b', strokeWidth: 2, stroke: isDarkMode ? '#1e2732' : '#fff' }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
