@@ -2,11 +2,39 @@
 import { Round, InitialData } from '../types';
 
 /**
+ * Strips commas from a string.
+ */
+export const stripCommas = (value: string): string => {
+  return value.replace(/,/g, '');
+};
+
+/**
+ * Formats a numeric string with thousand separators while preserving shortcuts and decimals.
+ */
+export const formatNumberWithCommas = (value: string): string => {
+  const cleanValue = stripCommas(value);
+  // Match the numeric part and the optional shortcut suffix (k, m, b)
+  const match = cleanValue.match(/^([\d\.]*)([kmb]?)$/i);
+  if (!match) return cleanValue;
+
+  const numPart = match[1];
+  const suffix = match[2];
+
+  if (!numPart) return suffix;
+
+  const parts = numPart.split('.');
+  // Add commas to the integer part
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  
+  return parts.join('.') + suffix;
+};
+
+/**
  * Parses a string input with shortcuts like 'k' or 'm' into a full numerical string.
  * Example: '3m' -> '3000000', '10k' -> '10000'
  */
 export const parseCurrencyShortcut = (input: string): string => {
-  const trimmed = input.trim().toLowerCase();
+  const trimmed = stripCommas(input.trim().toLowerCase());
   if (!trimmed) return '';
 
   let multiplier = 1;
@@ -24,7 +52,7 @@ export const parseCurrencyShortcut = (input: string): string => {
   }
 
   const value = parseFloat(numericPart);
-  if (isNaN(value)) return input; // Return original if not a number
+  if (isNaN(value)) return trimmed;
 
   return (value * multiplier).toString();
 };
