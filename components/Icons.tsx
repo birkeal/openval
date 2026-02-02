@@ -1,6 +1,22 @@
 
 import React from 'react';
 
+export const OpenCapLogo = ({ className = "h-8", isDark = false }) => (
+  <div className={`flex items-center gap-2 ${className}`}>
+    <div className="relative flex items-center justify-center shrink-0">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+        <rect width="32" height="32" rx="8" fill={isDark ? "#ffffff" : "#0f172a"} />
+        <path d="M16 8C11.5817 8 8 11.5817 8 16C8 20.4183 11.5817 24 16 24C20.4183 24 24 20.4183 24 16" stroke={isDark ? "#0f172a" : "#ffffff"} strokeWidth="3" strokeLinecap="round" />
+        <path d="M16 16L24 8" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="24" cy="8" r="2" fill="#3b82f6" />
+      </svg>
+    </div>
+    <span className={`text-xl font-[900] tracking-tighter shrink-0 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+      Open<span className="text-blue-500">Cap</span>
+    </span>
+  </div>
+);
+
 export const PlusIcon = ({ className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -31,7 +47,7 @@ export const SparklesIcon = ({ className = "w-5 h-5" }) => (
   </svg>
 );
 
-export const TrashIcon = ({ className = "w-5 h-5" }) => (
+export const TrashIcon = ({ className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
   </svg>
