@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Round, InitialData } from './types';
-import { calculateInitialRound, calculateNextRound, parseCurrencyShortcut } from './utils/calculations';
+import { calculateInitialRound, calculateNextRound, parseCurrencyShortcut, formatNumberWithCommas, stripCommas } from './utils/calculations';
 import { OpenCapLogo, PlusIcon, MoonIcon, SunIcon, ChartIcon, SparklesIcon, TrashIcon } from './components/Icons';
 import { analyzeCapTable } from './services/geminiService';
 import {
@@ -58,7 +58,7 @@ const App: React.FC = () => {
     if (!isNaN(inv) && !isNaN(eq) && eq > 0 && eq < 100) {
       const post = inv / (eq / 100);
       const pre = post - inv;
-      return Math.round(pre).toString();
+      return formatNumberWithCommas(Math.round(pre).toString());
     }
     return '';
   };
@@ -68,7 +68,7 @@ const App: React.FC = () => {
     const eq = parseFloat(eqStr);
     if (!isNaN(pre) && !isNaN(eq) && eq > 0 && eq < 100) {
       const inv = (pre * (eq / 100)) / (1 - eq / 100);
-      return Math.round(inv).toString();
+      return formatNumberWithCommas(Math.round(inv).toString());
     }
     return '';
   };
@@ -210,9 +210,9 @@ const App: React.FC = () => {
     return (
       <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${isDarkMode ? 'bg-[#15202b]' : 'bg-slate-50'}`}>
         <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-start mb-8">
             <div className="flex flex-col">
-              <OpenCapLogo isDark={isDarkMode} className="h-10 w-auto" />
+              <OpenCapLogo isDark={isDarkMode} className="w-[180px] h-auto" />
             </div>
             <div className="flex gap-2 items-center">
               <CurrencyToggle />
@@ -245,17 +245,19 @@ const App: React.FC = () => {
                   inputMode="decimal"
                   value={setupInvestment}
                   onChange={(e) => {
-                    setSetupInvestment(e.target.value);
+                    const formatted = formatNumberWithCommas(e.target.value);
+                    setSetupInvestment(formatted);
                     if (setupEquity !== '') {
-                      setSetupPreMoney(calculatePreFromInvAndEquity(e.target.value, setupEquity));
+                      setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
                     } else if (setupPreMoney !== '') {
-                      setSetupEquity(calculateEquityFromInvAndPre(e.target.value, setupPreMoney));
+                      setSetupEquity(calculateEquityFromInvAndPre(formatted, setupPreMoney));
                     }
                   }}
                   onBlur={() => {
                     const parsed = parseCurrencyShortcut(setupInvestment);
-                    setSetupInvestment(parsed);
-                    if (setupEquity !== '') setSetupPreMoney(calculatePreFromInvAndEquity(parsed, setupEquity));
+                    const formatted = formatNumberWithCommas(parsed);
+                    setSetupInvestment(formatted);
+                    if (setupEquity !== '') setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
                   }}
                   placeholder="e.g. 1m"
                   className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
@@ -290,18 +292,20 @@ const App: React.FC = () => {
                   inputMode="decimal"
                   value={setupPreMoney}
                   onChange={(e) => {
-                    setSetupPreMoney(e.target.value);
+                    const formatted = formatNumberWithCommas(e.target.value);
+                    setSetupPreMoney(formatted);
                     if (setupInvestment !== '' && setupEquity === '') {
-                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, e.target.value));
+                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
                     } else {
-                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, e.target.value));
+                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
                     }
                   }}
                   onBlur={() => {
                     const parsed = parseCurrencyShortcut(setupPreMoney);
-                    setSetupPreMoney(parsed);
+                    const formatted = formatNumberWithCommas(parsed);
+                    setSetupPreMoney(formatted);
                     if (setupEquity !== '') {
-                      setSetupInvestment(calculateInvFromPreAndEquity(parsed, setupEquity));
+                      setSetupInvestment(calculateInvFromPreAndEquity(formatted, setupEquity));
                     }
                   }}
                   placeholder="e.g. 4m"
@@ -328,7 +332,6 @@ const App: React.FC = () => {
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex flex-col">
             <OpenCapLogo isDark={isDarkMode} className="h-6 w-auto" />
-            <p className="text-[8px] opacity-40 uppercase tracking-[0.3em] font-black dark:text-[#8899a6] ml-1">Analytics</p>
           </div>
           <div className="flex gap-1 items-center">
             <CurrencyToggle />
@@ -513,17 +516,19 @@ const App: React.FC = () => {
                   inputMode="decimal"
                   value={nextRoundInvestment}
                   onChange={(e) => {
-                    setNextRoundInvestment(e.target.value);
+                    const formatted = formatNumberWithCommas(e.target.value);
+                    setNextRoundInvestment(formatted);
                     if (nextRoundEquity !== '') {
-                      setNextRoundPreMoney(calculatePreFromInvAndEquity(e.target.value, nextRoundEquity));
+                      setNextRoundPreMoney(calculatePreFromInvAndEquity(formatted, nextRoundEquity));
                     } else if (nextRoundPreMoney !== '') {
-                      setNextRoundEquity(calculateEquityFromInvAndPre(e.target.value, nextRoundPreMoney));
+                      setNextRoundEquity(calculateEquityFromInvAndPre(formatted, nextRoundPreMoney));
                     }
                   }}
                   onBlur={() => {
                     const parsed = parseCurrencyShortcut(nextRoundInvestment);
-                    setNextRoundInvestment(parsed);
-                    if (nextRoundEquity !== '') setNextRoundPreMoney(calculatePreFromInvAndEquity(parsed, nextRoundEquity));
+                    const formatted = formatNumberWithCommas(parsed);
+                    setNextRoundInvestment(formatted);
+                    if (nextRoundEquity !== '') setNextRoundPreMoney(calculatePreFromInvAndEquity(formatted, nextRoundEquity));
                   }}
                   placeholder="e.g. 1m"
                   className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
@@ -558,18 +563,19 @@ const App: React.FC = () => {
                   inputMode="decimal"
                   value={nextRoundPreMoney}
                   onChange={(e) => {
-                    setNextRoundPreMoney(e.target.value);
-                    // Fixed: was setting setupEquity instead of nextRoundEquity
+                    const formatted = formatNumberWithCommas(e.target.value);
+                    setNextRoundPreMoney(formatted);
                     if (nextRoundInvestment !== '' && nextRoundEquity === '') {
-                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, formatted));
                     } else {
-                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, formatted));
                     }
                   }}
                   onBlur={() => {
                     const parsed = parseCurrencyShortcut(nextRoundPreMoney);
-                    setNextRoundPreMoney(parsed);
-                    if (nextRoundEquity !== '') setNextRoundInvestment(calculateInvFromPreAndEquity(parsed, nextRoundEquity));
+                    const formatted = formatNumberWithCommas(parsed);
+                    setNextRoundPreMoney(formatted);
+                    if (nextRoundEquity !== '') setNextRoundInvestment(calculateInvFromPreAndEquity(formatted, nextRoundEquity));
                   }}
                   placeholder="e.g. 10m"
                   className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
