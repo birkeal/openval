@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Round, InitialData } from './types';
 import { calculateInitialRound, calculateNextRound, parseCurrencyShortcut } from './utils/calculations';
-import { PlusIcon, MoonIcon, SunIcon, ChartIcon, SparklesIcon, TrashIcon } from './components/Icons';
+import { OpenCapLogo, PlusIcon, MoonIcon, SunIcon, ChartIcon, SparklesIcon, TrashIcon } from './components/Icons';
 import { analyzeCapTable } from './services/geminiService';
 import {
   AreaChart,
@@ -211,8 +211,8 @@ const App: React.FC = () => {
       <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${isDarkMode ? 'bg-[#15202b]' : 'bg-slate-50'}`}>
         <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
           <div className="flex justify-between items-center mb-8">
-            <div>
-              <img src="img/OpenCap_logo_small.png"></img>
+            <div className="flex flex-col">
+              <img src="https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_small.png" width="180" />
             </div>
             <div className="flex gap-2 items-center">
               <CurrencyToggle />
@@ -326,9 +326,9 @@ const App: React.FC = () => {
     <div className={`min-h-screen pb-24 transition-colors duration-300 ${isDarkMode ? 'dark bg-[#15202b] text-white' : 'bg-slate-50 text-slate-900'}`}>
       <header className="sticky top-0 z-10 bg-white/80 dark:bg-[#1e2732]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#38444d] px-4 py-4">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">CapTable Pro</h2>
-            <p className="text-[10px] opacity-50 uppercase tracking-[0.2em] font-bold dark:text-[#8899a6]">Investment Dashboard</p>
+          <div className="flex flex-col">
+            <OpenCapLogo isDark={isDarkMode} className="h-6" />
+            <p className="text-[8px] opacity-40 uppercase tracking-[0.3em] font-black dark:text-[#8899a6] ml-1">Analytics</p>
           </div>
           <div className="flex gap-1 items-center">
             <CurrencyToggle />
@@ -560,9 +560,9 @@ const App: React.FC = () => {
                   onChange={(e) => {
                     setNextRoundPreMoney(e.target.value);
                     if (nextRoundInvestment !== '' && nextRoundEquity === '') {
-                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setSetupEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
                     } else {
-                      setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
+                      setSetupEquity(calculateEquityFromInvAndPre(nextRoundInvestment, e.target.value));
                     }
                   }}
                   onBlur={() => {
