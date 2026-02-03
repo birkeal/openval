@@ -30,10 +30,29 @@ const App: React.FC = () => {
   const [setupPreMoney, setSetupPreMoney] = useState('');
 
   // States for adding new rounds (modal)
-  const [nextRoundName, setNextRoundName] = useState('Series A');
+  const [nextRoundName, setNextRoundName] = useState('Round 2');
   const [nextRoundInvestment, setNextRoundInvestment] = useState('');
   const [nextRoundEquity, setNextRoundEquity] = useState('');
   const [nextRoundPreMoney, setNextRoundPreMoney] = useState('');
+
+  // Keyboard shortcut for '+'
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only allow if initial data exists and we are not in an input field
+      if (initialData && (e.key === '+' || e.key === '=') && !isRoundModalOpen) {
+        const activeElement = document.activeElement;
+        const isInput = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+        
+        if (!isInput) {
+          e.preventDefault();
+          setIsRoundModalOpen(true);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [initialData, isRoundModalOpen]);
 
   // Apply dark mode to body and html
   useEffect(() => {
@@ -142,7 +161,7 @@ const App: React.FC = () => {
     setNextRoundInvestment('');
     setNextRoundEquity('');
     setNextRoundPreMoney('');
-    setNextRoundName(`Round ${rounds.length + 1}`);
+    setNextRoundName(`Round ${rounds.length + 2}`);
   };
 
   const handleDeleteRound = (id: string) => {
@@ -486,6 +505,7 @@ const App: React.FC = () => {
                 <label className="block text-[10px] font-black mb-1 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6]">Round Label</label>
                 <input 
                   required
+                  autoFocus
                   type="text" 
                   value={nextRoundName}
                   onChange={(e) => setNextRoundName(e.target.value)}
@@ -549,7 +569,7 @@ const App: React.FC = () => {
                   value={nextRoundPreMoney}
                   onChange={(e) => {
                     const formatted = formatNumberWithCommas(e.target.value);
-                    setSetupPreMoney(formatted);
+                    setNextRoundPreMoney(formatted);
                     if (nextRoundInvestment !== '' && nextRoundEquity === '') {
                       setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, formatted));
                     } else {
