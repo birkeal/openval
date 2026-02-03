@@ -3,7 +3,14 @@ import { GoogleGenAI } from "@google/genai";
 import { Round } from "../types";
 
 export const analyzeCapTable = async (rounds: Round[], currencySymbol: string = '$'): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // Safe access to process.env to prevent crashes in environments where process is not defined
+  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : undefined;
+  
+  if (!apiKey) {
+    return "AI Analysis is unavailable: API Key not found in environment.";
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   const historyText = rounds.map(r => 
     `- ${r.name}: Valuation ${currencySymbol}${r.postMoneyValuation.toLocaleString()}, User Ownership ${r.userOwnershipPercentage.toFixed(2)}%, Value ${currencySymbol}${r.userValue.toLocaleString()}`
