@@ -156,12 +156,13 @@ const App: React.FC = () => {
       nextRoundName
     );
 
-    setRounds([...rounds, newRound]);
+    const updatedRounds = [...rounds, newRound];
+    setRounds(updatedRounds);
     setIsRoundModalOpen(false);
     setNextRoundInvestment('');
     setNextRoundEquity('');
     setNextRoundPreMoney('');
-    setNextRoundName(`Round ${rounds.length + 2}`);
+    setNextRoundName(`Round ${updatedRounds.length + 1}`);
   };
 
   const handleDeleteRound = (id: string) => {
