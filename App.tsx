@@ -198,6 +198,10 @@ const App: React.FC = () => {
   };
 
   const currentRound = rounds[rounds.length - 1];
+  const initialRound = rounds[0];
+  const multiple = initialRound && initialRound.userValue > 0 
+    ? (currentRound.userValue / initialRound.userValue) 
+    : 1;
 
   const ThemeToggle = () => (
     <button 
@@ -393,7 +397,7 @@ const App: React.FC = () => {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-6 flex-grow pb-32">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
             <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Stake Value ({userRole})</p>
             <p className="text-2xl font-black text-green-600 dark:text-green-400 truncate tracking-tight">
@@ -404,7 +408,11 @@ const App: React.FC = () => {
             <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Ownership</p>
             <p className="text-2xl font-black truncate tracking-tight text-slate-900 dark:text-white">{currentRound.userOwnershipPercentage.toFixed(2)}%</p>
           </div>
-          <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d] col-span-2 md:col-span-1">
+          <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
+            <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Multiple</p>
+            <p className="text-2xl font-black truncate tracking-tight text-blue-600 dark:text-blue-400">{multiple.toFixed(2)}x</p>
+          </div>
+          <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
             <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Company Valuation</p>
             <p className="text-2xl font-black truncate tracking-tight text-slate-900 dark:text-white">{currency}{currentRound.postMoneyValuation.toLocaleString()}</p>
           </div>
