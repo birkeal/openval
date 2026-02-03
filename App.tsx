@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const [initialData, setInitialData] = useState<InitialData | null>(null);
   const [rounds, setRounds] = useState<Round[]>([]);
   const [isRoundModalOpen, setIsRoundModalOpen] = useState(false);
-  const [userRole, setUserRole] = useState<'Investor' | 'Company'>('Company');
+  const [userRole, setUserRole] = useState<'Investor' | 'Founder'>('Founder');
 
   // Initial setup form states
   const [setupRoundName, setSetupRoundName] = useState('Initial Round');
@@ -92,6 +92,7 @@ const App: React.FC = () => {
     if (userRole === 'Investor') {
       own = equitySold;
     } else {
+      // Founder role
       own = 100 - equitySold;
     }
 
@@ -223,10 +224,10 @@ const App: React.FC = () => {
                 <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-[#15202b] rounded-2xl border border-slate-200 dark:border-[#38444d]">
                   <button 
                     type="button"
-                    onClick={() => setUserRole('Company')}
-                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Company' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
+                    onClick={() => setUserRole('Founder')}
+                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Founder' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
                   >
-                    Company
+                    Founder
                   </button>
                   <button 
                     type="button"
@@ -330,7 +331,7 @@ const App: React.FC = () => {
               type="submit"
               className="w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-[#15202b] font-black rounded-3xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-lg uppercase tracking-widest mt-4"
             >
-              Initialize Dashboard
+              Start
             </button>
           </form>
         </div>
@@ -548,7 +549,7 @@ const App: React.FC = () => {
                   value={nextRoundPreMoney}
                   onChange={(e) => {
                     const formatted = formatNumberWithCommas(e.target.value);
-                    setNextRoundPreMoney(formatted);
+                    setSetupPreMoney(formatted);
                     if (nextRoundInvestment !== '' && nextRoundEquity === '') {
                       setNextRoundEquity(calculateEquityFromInvAndPre(nextRoundInvestment, formatted));
                     } else {

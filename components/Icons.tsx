@@ -5,8 +5,8 @@ export const OpenCapLogo = ({ className = "h-8", isDark = false }) => {
   // If isDark is true, we are on a dark background, so we use the standard logo (light text version).
   // If isDark is false, we are on a light background, so we use the "light" logo (dark text version).
   const logoUrl = isDark 
-    ? "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_light_small.png"
-    : "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/opencap/OpenCap_logo_small.png";
+    ? "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/openval/OpenVal_logo_light.png"
+    : "https://raw.githubusercontent.com/birkeal/img/refs/heads/main/openval/OpenVal_logo.png";
 
   return (
     <img 
