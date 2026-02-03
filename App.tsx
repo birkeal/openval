@@ -219,148 +219,167 @@ const App: React.FC = () => {
     </button>
   );
 
+  const Disclaimer = () => (
+    <footer className="mt-auto py-8 text-center w-full">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-[#8899a6] opacity-60">
+        Built with AI by{' '}
+        <a 
+          href="https://github.com/birkeal" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hover:text-blue-500 transition-colors underline underline-offset-4 decoration-slate-300 dark:decoration-[#38444d]"
+        >
+          Alexander Birke
+        </a>
+      </p>
+    </footer>
+  );
+
   if (!initialData) {
     return (
-      <div className={`min-h-screen flex items-center justify-center p-4 transition-all duration-300 ${isDarkMode ? 'bg-[#15202b]' : 'bg-slate-50'}`}>
-        <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
-          <div className="flex justify-between items-start mb-8">
-            <div className="flex flex-col">
-              <OpenCapLogo isDark={isDarkMode} className="w-[180px] h-auto" />
+      <div className={`min-h-screen flex flex-col transition-all duration-300 ${isDarkMode ? 'bg-[#15202b]' : 'bg-slate-50'}`}>
+        <div className="flex-grow flex items-center justify-center p-4">
+          <div className="max-w-lg w-full bg-white dark:bg-[#1e2732] rounded-[2.5rem] shadow-2xl p-10 transition-all border border-slate-100 dark:border-[#38444d]">
+            <div className="flex justify-between items-start mb-8">
+              <div className="flex flex-col">
+                <OpenCapLogo isDark={isDarkMode} className="w-[180px] h-auto" />
+              </div>
+              <div className="flex gap-2 items-center">
+                <CurrencyToggle />
+                <ThemeToggle />
+              </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <CurrencyToggle />
-              <ThemeToggle />
-            </div>
-          </div>
-          
-          <p className="text-slate-600 dark:text-[#8899a6] mb-8 font-medium leading-relaxed">
-            Enter the details of your starting round. Select your role to calculate ownership from your perspective.
-          </p>
+            
+            <p className="text-slate-600 dark:text-[#8899a6] mb-8 font-medium leading-relaxed">
+              Enter the details of your starting round. Select your role to calculate ownership from your perspective.
+            </p>
 
-          <form onSubmit={handleStart} className="space-y-6">
-            <div className="space-y-5">
-              <div>
-                <label className="block text-[10px] font-black mb-3 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Your Role</label>
-                <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-[#15202b] rounded-2xl border border-slate-200 dark:border-[#38444d]">
-                  <button 
-                    type="button"
-                    onClick={() => setUserRole('Founder')}
-                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Founder' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
-                  >
-                    Founder
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setUserRole('Investor')}
-                    className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Investor' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
-                  >
-                    Investor
-                  </button>
+            <form onSubmit={handleStart} className="space-y-6">
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-[10px] font-black mb-3 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Your Role</label>
+                  <div className="grid grid-cols-2 p-1 bg-slate-100 dark:bg-[#15202b] rounded-2xl border border-slate-200 dark:border-[#38444d]">
+                    <button 
+                      type="button"
+                      onClick={() => setUserRole('Founder')}
+                      className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Founder' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
+                    >
+                      Founder
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setUserRole('Investor')}
+                      className={`py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${userRole === 'Investor' ? 'bg-white dark:bg-[#38444d] shadow-sm text-slate-900 dark:text-white' : 'text-slate-400 dark:text-[#8899a6]'}`}
+                    >
+                      Investor
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Round Name</label>
+                  <input 
+                    required
+                    type="text" 
+                    value={setupRoundName}
+                    onChange={(e) => setSetupRoundName(e.target.value)}
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Investment ({currency})</label>
+                  <input 
+                    required
+                    type="text" 
+                    inputMode="decimal"
+                    value={setupInvestment}
+                    onChange={(e) => {
+                      const formatted = formatNumberWithCommas(e.target.value);
+                      setSetupInvestment(formatted);
+                      if (setupEquity !== '') {
+                        setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
+                      } else if (setupPreMoney !== '') {
+                        setSetupEquity(calculateEquityFromInvAndPre(formatted, setupPreMoney));
+                      }
+                    }}
+                    onBlur={() => {
+                      const parsed = parseCurrencyShortcut(setupInvestment);
+                      const formatted = formatNumberWithCommas(parsed);
+                      setSetupInvestment(formatted);
+                      if (setupEquity !== '') setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
+                    }}
+                    placeholder="e.g. 1m"
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Investor's Equity (%)</label>
+                  <input 
+                    required
+                    type="number" 
+                    step="0.01"
+                    value={setupEquity}
+                    onChange={(e) => {
+                      setSetupEquity(e.target.value);
+                      if (setupInvestment !== '') {
+                        setSetupPreMoney(calculatePreFromInvAndEquity(setupInvestment, e.target.value));
+                      } else if (setupPreMoney !== '') {
+                        setSetupInvestment(calculateInvFromPreAndEquity(setupPreMoney, e.target.value));
+                      }
+                    }}
+                    placeholder="e.g. 20"
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Pre-Money Valuation ({currency})</label>
+                  <input 
+                    required
+                    type="text" 
+                    inputMode="decimal"
+                    value={setupPreMoney}
+                    onChange={(e) => {
+                      const formatted = formatNumberWithCommas(e.target.value);
+                      setSetupPreMoney(formatted);
+                      if (setupInvestment !== '' && setupEquity === '') {
+                        setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
+                      } else {
+                        setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
+                      }
+                    }}
+                    onBlur={() => {
+                      const parsed = parseCurrencyShortcut(setupPreMoney);
+                      const formatted = formatNumberWithCommas(parsed);
+                      setSetupPreMoney(formatted);
+                      if (setupEquity !== '') {
+                        setSetupInvestment(calculateInvFromPreAndEquity(formatted, setupEquity));
+                      }
+                    }}
+                    placeholder="e.g. 4m"
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Round Name</label>
-                <input 
-                  required
-                  type="text" 
-                  value={setupRoundName}
-                  onChange={(e) => setSetupRoundName(e.target.value)}
-                  className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Investment ({currency})</label>
-                <input 
-                  required
-                  type="text" 
-                  inputMode="decimal"
-                  value={setupInvestment}
-                  onChange={(e) => {
-                    const formatted = formatNumberWithCommas(e.target.value);
-                    setSetupInvestment(formatted);
-                    if (setupEquity !== '') {
-                      setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
-                    } else if (setupPreMoney !== '') {
-                      setSetupEquity(calculateEquityFromInvAndPre(formatted, setupPreMoney));
-                    }
-                  }}
-                  onBlur={() => {
-                    const parsed = parseCurrencyShortcut(setupInvestment);
-                    const formatted = formatNumberWithCommas(parsed);
-                    setSetupInvestment(formatted);
-                    if (setupEquity !== '') setSetupPreMoney(calculatePreFromInvAndEquity(formatted, setupEquity));
-                  }}
-                  placeholder="e.g. 1m"
-                  className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Investor's Equity (%)</label>
-                <input 
-                  required
-                  type="number" 
-                  step="0.01"
-                  value={setupEquity}
-                  onChange={(e) => {
-                    setSetupEquity(e.target.value);
-                    if (setupInvestment !== '') {
-                      setSetupPreMoney(calculatePreFromInvAndEquity(setupInvestment, e.target.value));
-                    } else if (setupPreMoney !== '') {
-                      setSetupInvestment(calculateInvFromPreAndEquity(setupPreMoney, e.target.value));
-                    }
-                  }}
-                  placeholder="e.g. 20"
-                  className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black mb-2 opacity-50 uppercase tracking-[0.2em] dark:text-[#8899a6] dark:opacity-70">Pre-Money Valuation ({currency})</label>
-                <input 
-                  required
-                  type="text" 
-                  inputMode="decimal"
-                  value={setupPreMoney}
-                  onChange={(e) => {
-                    const formatted = formatNumberWithCommas(e.target.value);
-                    setSetupPreMoney(formatted);
-                    if (setupInvestment !== '' && setupEquity === '') {
-                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
-                    } else {
-                      setSetupEquity(calculateEquityFromInvAndPre(setupInvestment, formatted));
-                    }
-                  }}
-                  onBlur={() => {
-                    const parsed = parseCurrencyShortcut(setupPreMoney);
-                    const formatted = formatNumberWithCommas(parsed);
-                    setSetupPreMoney(formatted);
-                    if (setupEquity !== '') {
-                      setSetupInvestment(calculateInvFromPreAndEquity(formatted, setupEquity));
-                    }
-                  }}
-                  placeholder="e.g. 4m"
-                  className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-[#38444d] bg-slate-50 dark:bg-[#15202b] dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-bold"
-                />
-              </div>
-            </div>
-
-            <button 
-              type="submit"
-              className="w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-[#15202b] font-black rounded-3xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-lg uppercase tracking-widest mt-4"
-            >
-              Start
-            </button>
-          </form>
+              <button 
+                type="submit"
+                className="w-full py-6 bg-slate-900 dark:bg-white text-white dark:text-[#15202b] font-black rounded-3xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-lg uppercase tracking-widest mt-4"
+              >
+                Start
+              </button>
+            </form>
+          </div>
         </div>
+        <Disclaimer />
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen pb-24 transition-colors duration-300 ${isDarkMode ? 'dark bg-[#15202b] text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen transition-colors duration-300 flex flex-col ${isDarkMode ? 'dark bg-[#15202b] text-white' : 'bg-slate-50 text-slate-900'}`}>
       <header className="sticky top-0 z-10 bg-white/80 dark:bg-[#1e2732]/80 backdrop-blur-md border-b border-slate-200 dark:border-[#38444d] px-4 py-4">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex flex-col">
@@ -373,7 +392,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6 flex-grow pb-32">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="bg-white dark:bg-[#1e2732] p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-[#38444d]">
             <p className="text-xs font-semibold opacity-50 mb-1 uppercase tracking-wider dark:text-[#8899a6]">Stake Value ({userRole})</p>
@@ -484,6 +503,8 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+
+      <Disclaimer />
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white dark:from-[#15202b] via-white/95 dark:via-[#15202b]/95 to-transparent">
         <div className="max-w-4xl mx-auto">
