@@ -1,5 +1,5 @@
 {
-  "name": "OpenCap",
-  "description": "A sophisticated tool for founders and investors to track company valuation, share dilution, and investment rounds with real-time visualizations and AI-powered insights.",
+  "name": "OpenVal",
+  "description": "An easy tool for founders and investors to track company valuation, share dilution, and investment rounds with real-time visualizations.",
   "requestFramePermissions": []
 }
